@@ -12,23 +12,6 @@ export default function Search() {
         setError(null);
 
         try {
-            // let e = document.createElement("a");
-            // e.target = "_blank",
-            // e.href = o.audioUrl,
-            // e.download = "".concat(o.title, ".mp3"),
-            // document.body.appendChild(e),
-            // e.click(),
-            // document.body.removeChild(e),
-
-            // const url = "https://rr1---sn-oguesn6d.googlevideo.com/videoplayback?expire=1726413993&ei=SajmZpCgCL-X1d8P0eaeiQI&ip=213.218.254.40&id=o-AGPrdc1jvPa6wBTcgAUn_ZuRg5wmndnPPgVxPP25ZpLX&itag=251&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&mh=0b&mm=31%2C26&mn=sn-oguesn6d%2Csn-npoldne7&ms=au%2Conr&mv=m&mvi=1&pl=24&initcwndbps=3720000&spc=54MbxQaCpWMehQDXlqLDP1fD7xd90nKzkTCNpPv5ENfHNoZ5DpAcFfYazg&vprv=1&svpuc=1&mime=audio%2Fwebm&rqh=1&gir=yes&clen=2169098&dur=140.221&lmt=1725635849978456&mt=1726391869&fvip=5&keepalive=yes&c=ANDROID&txp=6308224&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cspc%2Cvprv%2Csvpuc%2Cmime%2Crqh%2Cgir%2Cclen%2Cdur%2Clmt&sig=AJfQdSswRQIgFLc2mS4kQct3K-1h_kz75jAFuOA0dUdjp4vz4jHncJ0CIQCBHzqbUhsAIBavvdeOlaNqr4_OOal-hlUkLzn-5NQfhw%3D%3D&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=ABPmVW0wRQIgUcM2GfwF9XJ3r9fHzTYKhaO0L6A1vkjgKh7vuLKGSusCIQDa9W1u-gGs5ptSLCOpN86ANov7XZ_Q8WmwUTwePvlLyQ%3D%3D";
-            // const link = document.createElement('a');
-            // link.target = "_blank",
-            // link.href = url;
-            // link.download = "".concat('111', ".mp3"),
-            // document.body.appendChild(link);
-            // link.click();
-            // document.body.removeChild(link);
-
             const res = await fetch('/api/download', {
                 method: 'POST',
                 headers: {
@@ -47,12 +30,10 @@ export default function Search() {
             // 创建一个隐藏的<a>标签来下载文件
             const link = document.createElement('a');
             link.href = data.audioUrl;
-            console.log(data)
-            link.download = '1111';
+            link.download = "";
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-
 
         } catch (error) {
             console.error('下载出错:', error);

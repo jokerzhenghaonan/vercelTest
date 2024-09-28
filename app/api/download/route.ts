@@ -14,15 +14,16 @@ export async function POST(request: NextRequest) {
         }
 
         console.log('开始处理 YouTube 音频');
-        await processYoutubeAudio(url);
+        const result = await processYoutubeAudio(url);
+        console.log('音频处理完成, 结果:', result);
 
-      
-
-        return NextResponse.json(
-          { status: 200 });
-        } catch (error: any) {
-            console.error('处理 YouTube URL 时出错:', error);
-            console.error('错误堆栈:', error.stack);
-            return NextResponse.json({ error: '处理 YouTube URL 时出错: ' + error.message }, { status: 500 });
-        }
+        return NextResponse.json({
+            message: '成功',
+            audioUrl: result.audioUrl
+        }, { status: 200 });
+    } catch (error: any) {
+        console.error('处理 YouTube URL 时出错:', error);
+        console.error('错误堆栈:', error.stack);
+        return NextResponse.json({ error: '处理 YouTube URL 时出错: ' + error.message }, { status: 500 });
+    }
 }
