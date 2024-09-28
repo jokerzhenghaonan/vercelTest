@@ -145,7 +145,7 @@ const cookies = [
   }
 ];
 
-const agent = ytdl.createProxyAgent({ uri: "http://127.0.0.1:33210" }, cookies);
+const agent = ytdl.createAgent(cookies);
 
 
 async function tryProcessAudio(url: string, retries = 0){
