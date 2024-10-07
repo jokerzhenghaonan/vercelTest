@@ -1,7 +1,7 @@
 import ytdl from '@distube/ytdl-core';
 // import axios from 'axios';  
 // import fs from 'fs';  
-
+const { getRandomIPv6 } = require("@distube/ytdl-core/lib/utils");
 const cookies = [
     {
         "domain": ".youtube.com",
@@ -103,13 +103,15 @@ const cookies = [
     }
     ]
 
-const agent = ytdl.createAgent(cookies);
-// const agent = ytdl.createProxyAgent({uri: "http://127.0.0.1:33210"}, cookies);
-
+//const agent = ytdl.createAgent(cookies);
+// const agent = ytdl.createProxyAgent({uri: "http://127.0.0.1:7890"}, cookies);
+ const agentForARandomIP = ytdl.createAgent(cookies, {
+    localAddress: getRandomIPv6("2001:2::/48"),
+  });
 
 async function tryProcessAudio(url: string, retries = 0){
     console.log(`开始处理 YouTube 音频, URL: ${url}, 剩余重试次数: ${retries}`);
-        const videoInfo = await ytdl.getInfo(url, { agent });  
+        const videoInfo = await ytdl.getInfo(url, { agent: agentForARandomIP });  
         console.log('获取到视频信息', videoInfo);  
         
         const audioFormat = ytdl.chooseFormat(videoInfo.formats, {  
