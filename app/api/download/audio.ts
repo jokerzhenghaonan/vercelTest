@@ -103,9 +103,9 @@ const cookies = [
     }
     ]
 
-//const agent = ytdl.createAgent(cookies);
- const agent = ytdl.createProxyAgent({uri: "http://127.0.0.1:7890"}, cookies
-);
+const agent = ytdl.createAgent(cookies);
+//  const agent = ytdl.createProxyAgent({uri: "http://127.0.0.1:7890"}, cookies
+// );
 // const agentForARandomIP = ytdl.createAgent(undefined, {
 //     localAddress: getRandomIPv6("2001:2::/48"),
 //   });
