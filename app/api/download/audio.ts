@@ -117,10 +117,10 @@ async function tryProcessAudio(url: string, retries = 0){
     console.log(`开始处理 YouTube 音频, URL: ${url}, 剩余重试次数: ${retries}`);
     const cookieGet = await GET();
     console.log(cookieGet)
-    const agent = ytdl.createProxyAgent({uri: "http://127.0.0.1:7890"}, cookieGet);
+    const agent = ytdl.createAgent(cookieGet);
         const videoInfo = await ytdl.getInfo(url, { agent: agent });  
         console.log('获取到视频信息', videoInfo);  
-        
+      
         const audioFormat = ytdl.chooseFormat(videoInfo.formats, {  
             quality: 'lowestaudio',
         });  
