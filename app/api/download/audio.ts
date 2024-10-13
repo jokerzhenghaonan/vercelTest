@@ -174,7 +174,7 @@ async function GET() {
         executablePath: isDev
           ? localExecutablePath
           : await chromium.executablePath(remoteExecutablePath),
-        headless: false,
+        headless: true,
       });
       console.log("puppeteer  puppeteer.launch ")
 

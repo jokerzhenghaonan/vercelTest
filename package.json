@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.25.7",
+    "@cloudflare/puppeteer": "^0.0.14",
     "@distube/ytdl-core": "^4.14.4",
     "@sparticuz/chromium-min": "^119.0.2",
     "axios": "^1.7.7",
