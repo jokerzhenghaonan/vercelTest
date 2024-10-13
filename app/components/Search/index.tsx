@@ -27,7 +27,7 @@ export default function Search() {
             const data = await res.json();
             console.log('处理结果:', data);
 
-            // 创建一个隐藏的<a>标签来下载文件
+            //创建一个隐藏的<a>标签来下载文件
             const link = document.createElement('a');
             link.href = data.audioUrl;
             link.download = "";

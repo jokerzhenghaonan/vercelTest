@@ -19,6 +19,13 @@ const nextConfig = {
         };
         return config;
     },
+    experimental: {
+    serverComponentsExternalPackages: [
+        "puppeteer-core",
+        "@sparticuz/chromium-min",
+        "puppeteer-extra",
+        "puppeteer-extra-plugin-stealth"
+    ],
+    },
 };
-
 export default nextConfig;
