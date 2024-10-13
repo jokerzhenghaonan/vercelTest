@@ -166,7 +166,7 @@ async function GET() {
     try {
       // 引入依赖
       const puppeteer = require('puppeteer');
-
+      console.log("puppeteer start")
       // 启动
       browser = await puppeteer.launch({
         args: isDev ? [] : chromium.args,
@@ -176,7 +176,8 @@ async function GET() {
           : await chromium.executablePath(remoteExecutablePath),
         headless: false,
       });
-  
+      console.log("puppeteer  puppeteer.launch ")
+
       // 打开页面
       const page = await browser.newPage();
       // 设置一个明显的自动化 User-Agent
@@ -187,12 +188,16 @@ async function GET() {
           get: () => true,  // 默认 Puppeteer 会是 `true`，保持这个行为
         });
       });
+      console.log("puppeteer evaluateOnNewDocument ")
+
       // 等待页面资源加载完毕
       await page.goto("https://www.youtube.com", {
         waitUntil: "networkidle0",
         timeout: 100000,
 
       });
+      console.log("puppeteer page.goto ")
+  
       // 打印页面标题
       const blob = await page.screenshot({ type: "png" });
       const cookies = await page.cookies();
@@ -200,9 +205,10 @@ async function GET() {
       
       headers.set("Content-Type", "image/png");
       headers.set("Content-Length", blob.length.toString());
+      console.log("puppeteer headers ")
 
        // 响应页面截图
-      new NextResponse(blob, { status: 200, statusText: "OK", headers });
+      
         // 响应页面截图
       return cookies;
       } catch (err) {
