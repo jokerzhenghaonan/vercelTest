@@ -386,7 +386,7 @@ async function GET() {
     let browser = null;
     try {
       // 引入依赖
-      const puppeteer = require('puppeteer-core');
+      const puppeteer = require('puppeteer');
 
       // 启动
       console.log('准备启动 Puppeteer');
