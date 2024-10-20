@@ -226,55 +226,55 @@ import chromium from "@sparticuz/chromium-min";
 // import axios from 'axios';  
 // import fs from 'fs';  
 // const { getRandomIPv6 } = require("@distube/ytdl-core/lib/utils");
-let cookies: Cookie[] = [];
- //{
-//   name: 'VISITOR_INFO1_LIVE',
-//   value: 'UEtBReTMbTs',
-//   domain: '.youtube.com',
-//   path: '/',
-//   expires: 1744967688.844423,
-//   size: 29,
-//   httpOnly: true,
-//   secure: true,
-//   session: false,
-//   sameSite: 'None',
-//   priority: 'Medium',
-//   sameParty: false,
-//   sourceScheme: 'Secure',
-//   partitionKey: undefined
-// },
-// {
-//   name: 'YSC',
-//   value: 'eFQdNqZjMLw',
-//   domain: '.youtube.com',
-//   path: '/',
-//   expires: -1,
-//   size: 14,
-//   httpOnly: true,
-//   secure: true,
-//   session: true,
-//   sameSite: 'None',
-//   priority: 'Medium',
-//   sameParty: false,
-//   sourceScheme: 'Secure',
-//   partitionKey: undefined
-// },
-// {
-//   name: 'GPS',
-//   value: '1',
-//   domain: '.youtube.com',
-//   path: '/',
-//   expires: 1729417488.844231,
-//   size: 4,
-//   httpOnly: true,
-//   secure: true,
-//   session: false,
-//   priority: 'Medium',
-//   sameParty: false,
-//   sourceScheme: 'Secure',
-//   partitionKey: undefined
-// }
-//]
+let cookies:  [
+ {
+  name: 'VISITOR_INFO1_LIVE',
+  value: 'UEtBReTMbTs',
+  domain: '.youtube.com',
+  path: '/',
+  expires: 1744967688.844423,
+  size: 29,
+  httpOnly: true,
+  secure: true,
+  session: false,
+  sameSite: 'None',
+  priority: 'Medium',
+  sameParty: false,
+  sourceScheme: 'Secure',
+  partitionKey: undefined
+},
+{
+  name: 'YSC',
+  value: 'eFQdNqZjMLw',
+  domain: '.youtube.com',
+  path: '/',
+  expires: -1,
+  size: 14,
+  httpOnly: true,
+  secure: true,
+  session: true,
+  sameSite: 'None',
+  priority: 'Medium',
+  sameParty: false,
+  sourceScheme: 'Secure',
+  partitionKey: undefined
+},
+{
+  name: 'GPS',
+  value: '1',
+  domain: '.youtube.com',
+  path: '/',
+  expires: 1729417488.844231,
+  size: 4,
+  httpOnly: true,
+  secure: true,
+  session: false,
+  priority: 'Medium',
+  sameParty: false,
+  sourceScheme: 'Secure',
+  partitionKey: undefined
+}
+]
 import express from 'express';
 
 const app = express();
@@ -283,17 +283,18 @@ const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`App is running on port ${port}`);
 });
-interface Cookie {
-  name: string;
-  value: string;
-  expirationDate?: number;
-  domain?: string;
-  path?: string;
-  secure?: boolean;
-  httpOnly?: boolean;
-  hostOnly?: boolean;
-  sameSite?: string;
-}
+// interface Cookie {
+//   name: string;
+//   value: string;
+//   expirationDate?: number;
+//   domain?: string;
+//   path?: string;
+//   expires: float;
+//   secure?: boolean;
+//   httpOnly?: boolean;
+//   hostOnly?: boolean;
+//   sameSite?: string;
+// }
 // const agent = ytdl.createProxyAgent({uri: "http://127.0.0.1:7890"}, cookies
 // );
 // const agentForARandomIP = ytdl.createAgent(undefined, {
