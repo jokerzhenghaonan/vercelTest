@@ -226,7 +226,7 @@ import chromium from "@sparticuz/chromium-min";
 // import axios from 'axios';  
 // import fs from 'fs';  
 // const { getRandomIPv6 } = require("@distube/ytdl-core/lib/utils");
-const cookies =[
+let cookies: Cookie[] = [];
  //{
 //   name: 'VISITOR_INFO1_LIVE',
 //   value: 'UEtBReTMbTs',
@@ -274,9 +274,19 @@ const cookies =[
 //   sourceScheme: 'Secure',
 //   partitionKey: undefined
 // }
-]
+//]
 
-
+interface Cookie {
+  name: string;
+  value: string;
+  expirationDate?: number;
+  domain?: string;
+  path?: string;
+  secure?: boolean;
+  httpOnly?: boolean;
+  hostOnly?: boolean;
+  sameSite?: string;
+}
 // const agent = ytdl.createProxyAgent({uri: "http://127.0.0.1:7890"}, cookies
 // );
 // const agentForARandomIP = ytdl.createAgent(undefined, {
@@ -285,8 +295,8 @@ const cookies =[
 async function tryProcessAudio(url: string, retries = 0){
     console.log(`开始处理 YouTube 音频, URL: ${url}, 剩余重试次数: ${retries}`);
   //  const cookieGet = await GET();
-     const agent = ytdl.createProxyAgent({uri: "http://127.0.0.1:7890"}, cookies);
-  // const agent = ytdl.createAgent(cookies);
+    // const agent = ytdl.createProxyAgent({uri: "http://127.0.0.1:7890"}, cookies);
+   const agent = ytdl.createAgent(cookies);
   //  console.log(agent, "55555")
     const videoInfo = await ytdl.getInfo(url, { agent: agent });  
     console.log('获取到视频信息', videoInfo);  
