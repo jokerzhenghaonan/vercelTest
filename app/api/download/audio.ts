@@ -275,7 +275,14 @@ let cookies: Cookie[] = [];
 //   partitionKey: undefined
 // }
 //]
+import express from 'express';
 
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.listen(port, () => {
+  console.log(`App is running on port ${port}`);
+});
 interface Cookie {
   name: string;
   value: string;
@@ -295,11 +302,11 @@ interface Cookie {
 async function tryProcessAudio(url: string, retries = 0){
     console.log(`开始处理 YouTube 音频, URL: ${url}, 剩余重试次数: ${retries}`);
   //  const cookieGet = await GET();
-    // const agent = ytdl.createProxyAgent({uri: "http://127.0.0.1:7890"}, cookies);
-   const agent = ytdl.createAgent(cookies);
+    const agent = ytdl.createProxyAgent({uri: "http://127.0.0.1:3000"}, cookies);
+  // const agent = ytdl.createAgent(cookies);
   //  console.log(agent, "55555")
     const videoInfo = await ytdl.getInfo(url, { agent: agent });  
-    console.log('获取到视频信息', videoInfo);  
+   // console.log('获取到视频信息', videoInfo);  
     
     const audioFormat = ytdl.chooseFormat(videoInfo.formats, {  
         quality: 'lowestaudio',
