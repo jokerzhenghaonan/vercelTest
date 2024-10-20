@@ -323,10 +323,7 @@ async function convertWebMToMP3(inputFilePath:string) {
         console.log("Conversion finished successfully");
         resolve(outputFilePath);
       })
-      .on("error", (err) => {
-        console.error("Error during conversion:", err);
-        reject(err);
-      })
+      
       .save(outputFilePath);
   });
 }
