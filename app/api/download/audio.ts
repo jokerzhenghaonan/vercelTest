@@ -120,18 +120,18 @@
 //     const agent = ytdl.createAgent(cookieGet);
 //         const videoInfo = await ytdl.getInfo(url, { agent: agent });  
 //         console.log('获取到视频信息', videoInfo);  
-      
+
 //         const audioFormat = ytdl.chooseFormat(videoInfo.formats, {  
 //             quality: 'lowestaudio',
 //         });  
-        
+
 //         if (!audioFormat || !audioFormat.url) {  
 //             throw new Error('无法获取音频 URL');  
 //         }  
-        
+
 //         console.log('获取到音频 URL:', audioFormat.url);  
 //         return {audioUrl: audioFormat.url}
-        
+
 // }  
 
 // export async function processYoutubeAudio(url: string): Promise<any> {
@@ -197,85 +197,87 @@
 
 //       });
 //       console.log("puppeteer page.goto ")
-  
+
 //       // 打印页面标题
 //       const blob = await page.screenshot({ type: "png" });
 //       const cookies = await page.cookies();
 //       const headers = new Headers();
-      
+
 //       headers.set("Content-Type", "image/png");
 //       headers.set("Content-Length", blob.length.toString());
 //       console.log("puppeteer headers ")
 
 //        // 响应页面截图
-      
+
 //         // 响应页面截图
 //       return cookies;
 //       } catch (err) {
 //         return "";
-      
+
 //       } finally {
 //         // 释放资源
 //         await browser.close();
 //       }
 //   }
 
-import ytdl from 'ytdl-core';
-import {  NextResponse } from 'next/server';
+// import ytdl from 'ytdl-core';
+import youtubedl  from 'youtube-dl-exec';
+import { NextResponse } from 'next/server';
 import chromium from "@sparticuz/chromium-min";
 // import axios from 'axios';  
 // import fs from 'fs';  
 // const { getRandomIPv6 } = require("@distube/ytdl-core/lib/utils");
-let cookies:  [
- {
-  name: 'VISITOR_INFO1_LIVE',
-  value: 'UEtBReTMbTs',
-  domain: '.youtube.com',
-  path: '/',
-  expires: 1744967688.844423,
-  size: 29,
-  httpOnly: true,
-  secure: true,
-  session: false,
-  sameSite: 'None',
-  priority: 'Medium',
-  sameParty: false,
-  sourceScheme: 'Secure',
-  partitionKey: undefined
-},
-{
-  name: 'YSC',
-  value: 'eFQdNqZjMLw',
-  domain: '.youtube.com',
-  path: '/',
-  expires: -1,
-  size: 14,
-  httpOnly: true,
-  secure: true,
-  session: true,
-  sameSite: 'None',
-  priority: 'Medium',
-  sameParty: false,
-  sourceScheme: 'Secure',
-  partitionKey: undefined
-},
-{
-  name: 'GPS',
-  value: '1',
-  domain: '.youtube.com',
-  path: '/',
-  expires: 1729417488.844231,
-  size: 4,
-  httpOnly: true,
-  secure: true,
-  session: false,
-  priority: 'Medium',
-  sameParty: false,
-  sourceScheme: 'Secure',
-  partitionKey: undefined
-}
+let cookies: [
+  {
+    name: 'VISITOR_INFO1_LIVE',
+    value: 'UEtBReTMbTs',
+    domain: '.youtube.com',
+    path: '/',
+    expires: 1744967688.844423,
+    size: 29,
+    httpOnly: true,
+    secure: true,
+    session: false,
+    sameSite: 'None',
+    priority: 'Medium',
+    sameParty: false,
+    sourceScheme: 'Secure',
+    partitionKey: undefined
+  },
+  {
+    name: 'YSC',
+    value: 'eFQdNqZjMLw',
+    domain: '.youtube.com',
+    path: '/',
+    expires: -1,
+    size: 14,
+    httpOnly: true,
+    secure: true,
+    session: true,
+    sameSite: 'None',
+    priority: 'Medium',
+    sameParty: false,
+    sourceScheme: 'Secure',
+    partitionKey: undefined
+  },
+  {
+    name: 'GPS',
+    value: '1',
+    domain: '.youtube.com',
+    path: '/',
+    expires: 1729417488.844231,
+    size: 4,
+    httpOnly: true,
+    secure: true,
+    session: false,
+    priority: 'Medium',
+    sameParty: false,
+    sourceScheme: 'Secure',
+    partitionKey: undefined
+  }
 ]
 import express from 'express';
+import {HttpsProxyAgent}  from 'https-proxy-agent';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -300,36 +302,89 @@ app.listen(port, () => {
 // const agentForARandomIP = ytdl.createAgent(undefined, {
 //     localAddress: getRandomIPv6("2001:2::/48"),
 //   });
-async function tryProcessAudio(url: string, retries = 0){
-    console.log(`开始处理 YouTube 音频, URL: ${url}, 剩余重试次数: ${retries}`);
+const ffmpeg = require("fluent-ffmpeg");
+const path = require("path");
+
+// Set the path to your ffmpeg binary
+const ffmpegPath = path.join(process.cwd(), "tmp", "ffmpeg");
+ffmpeg.setFfmpegPath(ffmpegPath);
+
+// Replace the URL with the desired YouTube video URL
+const videoUrl = "";
+
+async function convertWebMToMP3(inputFilePath:string) {
+  const outputFilePath = `output.mp3`;
+
+  return new Promise((resolve, reject) => {
+    ffmpeg(inputFilePath)
+      .audioBitrate(128)
+      .toFormat("mp3")
+      .on("end", () => {
+        console.log("Conversion finished successfully");
+        resolve(outputFilePath);
+      })
+      .on("error", (err) => {
+        console.error("Error during conversion:", err);
+        reject(err);
+      })
+      .save(outputFilePath);
+  });
+}
+
+async function downloadAndConvert(url: string) {
+  const webmFilePath = path.join(process.cwd(), "tmp", "output.webm");
+
+  try {
+    // Step 1: Download the audio as WebM
+    const output = await youtubedl(url, {
+      extractAudio: true,
+      audioFormat: "mp3",
+      preferFfmpeg: true,
+      output: webmFilePath,
+    });
+    console.log("Download completed:", output);
+
+    // Step 2: Convert WebM to MP3
+    const mp3Path = await convertWebMToMP3(webmFilePath);
+    console.log("MP3 saved to:", mp3Path);
+  } catch (err) {
+    console.error("Error:", err);
+  }
+}
+
+async function tryProcessAudio(url: string, retries = 0) {
+  console.log(`开始处理 YouTube 音频, URL: ${url}, 剩余重试次数: ${retries}`);
   //  const cookieGet = await GET();
   //  const agent = ytdl.createProxyAgent({uri: "http://127.0.0.1:3000"}, cookies);
 
   //  console.log(agent, "55555")
-    const videoInfo = await ytdl.getInfo(url);  
-   // console.log('获取到视频信息', videoInfo);  
-    
-    const audioFormat = ytdl.chooseFormat(videoInfo.formats, {  
-        quality: 'lowestaudio',
-    });  
-    
-    if (!audioFormat || !audioFormat.url) {  
-        throw new Error('无法获取音频 URL');  
-    }  
-    
-    console.log('获取到音频 URL:', audioFormat.url);  
-    return {audioUrl: audioFormat.url}
-        
-}  
+ // const proxyUrl = 'http://127.0.0.1:7890';
+  // const agent = new HttpsProxyAgent(proxyUrl);
+  // const videoInfo = await youtubedl.getInfo(url);
+  // console.log('获取到视频信息', videoInfo);
+
+  // const audioFormat = youtubedl.chooseFormat(videoInfo.formats, {
+  //   quality: 'lowestaudio',
+  // });
+
+  // if (!audioFormat || !audioFormat.url) {
+  //   throw new Error('无法获取音频 URL');
+  // }
+
+  // console.log('获取到音频 URL:', audioFormat.url);
+  downloadAndConvert(url)
+  return { audioUrl: "audioFormat.url" }
+
+}
 
 export async function processYoutubeAudio(url: string): Promise<any> {
-    try {
-        return await tryProcessAudio(url);
-        // return GET();
-    } catch (error) {
-        console.error('processYoutubeAudio 最终错误:', error);
-        throw error;
-    }
+  try {
+    return await tryProcessAudio(url);
+    // return GET();
+  } catch (error) {
+    console.error('processYoutubeAudio 最终错误:', error);
+    throw error;
+  }
 }
 
 // 本地 Chrome 执行包路径、
@@ -337,8 +392,8 @@ const localExecutablePath =
   process.platform === "win32"
     ? "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
     : process.platform === "linux"
-    ? "/usr/bin/google-chrome"
-    : "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+      ? "/usr/bin/google-chrome"
+      : "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 
 // 远程执行包
 /**  @type {import('next').NextConfig} */
@@ -350,83 +405,83 @@ const remoteExecutablePath =
 // 运行环境
 const isDev = process.env.NODE_ENV === "development";
 async function GET() {
-    let browser = null;
-    try {
-      // 引入依赖
-      const puppeteer = require('puppeteer');
+  let browser = null;
+  try {
+    // 引入依赖
+    const puppeteer = require('puppeteer');
 
-      // 启动
-      console.log('准备启动 Puppeteer');
+    // 启动
+    console.log('准备启动 Puppeteer');
 
-      browser = await puppeteer.launch({
-        args: isDev ? [] : chromium.args,
-                  defaultViewport: { width: 1920, height: 1080 },
-        executablePath: isDev
-          ? localExecutablePath
-          : await chromium.executablePath(remoteExecutablePath),
-        headless: true,  // 确保无头模式
-        // Disable image loading for faster page loads
-        ignoreHTTPSErrors: true,
-      } );
-      
-      console.log(browser, "1111")
-  
-      // 打开页面
-      console.log('浏览器已启动，打开新页面');
-      const page = await browser.newPage();
+    browser = await puppeteer.launch({
+      args: isDev ? [] : chromium.args,
+      defaultViewport: { width: 1920, height: 1080 },
+      executablePath: isDev
+        ? localExecutablePath
+        : await chromium.executablePath(remoteExecutablePath),
+      headless: true,  // 确保无头模式
+      // Disable image loading for faster page loads
+      ignoreHTTPSErrors: true,
+    });
 
-      // 启用请求拦截
-      await page.setRequestInterception(true);
-      page.on('request', (req: any) => {
-        if (['image', 'stylesheet', 'font', 'media', 'script'].includes(req.resourceType())) {
-          req.abort();
-        } else {
-          req.continue();
-        }
-      });
+    console.log(browser, "1111")
 
-      // 设置一个明显的自动化 User-Agent
-      await page.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/91.0.4472.114 Safari/537.36");
-      // 不隐藏 navigator.webdriver
-      await page.evaluateOnNewDocument(() => {
-        Object.defineProperty(navigator, 'webdriver', {
-          get: () => true,  // 默认 Puppeteer 会是 `true`，保持这个行为
-        });
-      });
+    // 打开页面
+    console.log('浏览器已启动，打开新页面');
+    const page = await browser.newPage();
 
-      console.log(await page.evaluateOnNewDocument(() => {
-        Object.defineProperty(navigator, 'webdriver', {
-          get: () => true,  // 默认 Puppeteer 会是 `true`，保持这个行为
-        });
-      }), "2222");
-      
-
-      // 等待页面资源加载完毕
-      console.log('准备访问页面');
-      await page.goto("https://www.youtube.com", {
-          waitUntil: "domcontentloaded",
-          timeout: 8000,
-      });
-
-      console.log(await page.goto("https://www.youtube.com", {
-        waitUntil: "domcontentloaded",
-        timeout: 8000,
-      }), "33333");
-
-      // 打印页面标题
-      const cookies = await page.cookies();
-      console.log(cookies, "44444")
-
-        // 响应页面截图
-      return cookies
-      } catch (err) {
-        return NextResponse.json(
-          { error: "Internal Server Error" },
-          { status: 500 }
-        );
-      
-      } finally {
-        // 释放资源
-        await browser.close();
+    // 启用请求拦截
+    await page.setRequestInterception(true);
+    page.on('request', (req: any) => {
+      if (['image', 'stylesheet', 'font', 'media', 'script'].includes(req.resourceType())) {
+        req.abort();
+      } else {
+        req.continue();
       }
+    });
+
+    // 设置一个明显的自动化 User-Agent
+    await page.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/91.0.4472.114 Safari/537.36");
+    // 不隐藏 navigator.webdriver
+    await page.evaluateOnNewDocument(() => {
+      Object.defineProperty(navigator, 'webdriver', {
+        get: () => true,  // 默认 Puppeteer 会是 `true`，保持这个行为
+      });
+    });
+
+    console.log(await page.evaluateOnNewDocument(() => {
+      Object.defineProperty(navigator, 'webdriver', {
+        get: () => true,  // 默认 Puppeteer 会是 `true`，保持这个行为
+      });
+    }), "2222");
+
+
+    // 等待页面资源加载完毕
+    console.log('准备访问页面');
+    await page.goto("https://www.youtube.com", {
+      waitUntil: "domcontentloaded",
+      timeout: 8000,
+    });
+
+    console.log(await page.goto("https://www.youtube.com", {
+      waitUntil: "domcontentloaded",
+      timeout: 8000,
+    }), "33333");
+
+    // 打印页面标题
+    const cookies = await page.cookies();
+    console.log(cookies, "44444")
+
+    // 响应页面截图
+    return cookies
+  } catch (err) {
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+
+  } finally {
+    // 释放资源
+    await browser.close();
   }
+}
