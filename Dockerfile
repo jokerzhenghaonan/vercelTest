@@ -2,7 +2,9 @@
 FROM node:18
 
 # 安装 ffmpeg
-RUN apt-get update && apt-get install -y ffmpeg
+RUN apt-get update && apt-get install -y ffmpeg && apt-get update && \
+    apt-get install -y python3.7 python3-pip && \
+    ln -s /usr/bin/python3.7 /usr/bin/python
 
 # 创建并设置工作目录
 WORKDIR /app
@@ -24,3 +26,9 @@ EXPOSE 3000
 
 # 启动应用
 CMD ["npm", "start"]
+
+# 安装 Python 依赖（如果有 requirements.txt）
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+

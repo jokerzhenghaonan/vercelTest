@@ -330,7 +330,9 @@ async function convertWebMToMP3(inputFilePath:string) {
 
 async function downloadAndConvert(url: string) {
   const webmFilePath = path.join(process.cwd(), "tmp", "output.webm");
-
+  console.log("Download webmFilePath:", webmFilePath);
+const proxyUrl = 'http://127.0.0.1:7890';
+  const agent = new HttpsProxyAgent(proxyUrl);
   try {
     // Step 1: Download the audio as WebM
     const output = await youtubedl(url, {
@@ -338,6 +340,7 @@ async function downloadAndConvert(url: string) {
       audioFormat: "mp3",
       preferFfmpeg: true,
       output: webmFilePath,
+      
     });
     console.log("Download completed:", output);
 
@@ -369,7 +372,7 @@ async function tryProcessAudio(url: string, retries = 0) {
   // }
 
   // console.log('获取到音频 URL:', audioFormat.url);
-  downloadAndConvert(url)
+  await downloadAndConvert(url)
   return { audioUrl: "audioFormat.url" }
 
 }
