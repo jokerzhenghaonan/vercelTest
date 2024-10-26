@@ -331,22 +331,22 @@ async function convertWebMToMP3(inputFilePath:string) {
 async function downloadAndConvert(url: string) {
   const webmFilePath = path.join(process.cwd(), "tmp", "output.webm");
   console.log("Download webmFilePath:", webmFilePath);
-const proxyUrl = 'http://127.0.0.1:7890';
-  const agent = new HttpsProxyAgent(proxyUrl);
+
   try {
     // Step 1: Download the audio as WebM
-    const output = await youtubedl(url, {
-      extractAudio: true,
-      audioFormat: "mp3",
-      preferFfmpeg: true,
-      output: webmFilePath,
-      
-    });
-    console.log("Download completed:", output);
-
+    
+    youtubedl(url, {
+      dumpSingleJson: true,
+      noCheckCertificates: true,
+      noWarnings: true,
+      preferFreeFormats: true,
+      addHeader: ['referer:youtube.com', 'user-agent:googlebot']
+    }).then(output => console.log(output))
     // Step 2: Convert WebM to MP3
-    const mp3Path = await convertWebMToMP3(webmFilePath);
-    console.log("MP3 saved to:", mp3Path);
+  //  const mp3Path = await convertWebMToMP3(webmFilePath);
+    //console.log("MP3 saved to:", mp3Path);
+        console.log("MP3 saved to:");
+
   } catch (err) {
     console.error("Error:", err);
   }
