@@ -356,23 +356,24 @@ async function downloadAndConvert(url: string) {
 async function tryProcessAudio(url: string, retries = 0) {
   console.log(`开始处理 YouTube 音频, URL: ${url}, 剩余重试次数: ${retries}`);
   //  const cookieGet = await GET();
-  //  const agent = ytdl.createProxyAgent({uri: "http://127.0.0.1:3000"}, cookies);
-   const agent = ytdl.createAgent(cookies);
-  //  console.log(agent, "55555")
+  //  const agent = ytdl.createProxyAgent({uri: "http://127.0.0.1:7890"}, cookies);
+  //  const agent = ytdl.createAgent(cookies);
+  //   console.log(agent, "55555")
 
-    const videoInfo = await ytdl.getInfo(url, { agent: agent });  
-   // console.log('获取到视频信息', videoInfo);  
+  //   const videoInfo = await ytdl.getInfo(url, { agent: agent });  
+  //   console.log('获取到视频信息', videoInfo);  
     
-    const audioFormat = ytdl.chooseFormat(videoInfo.formats, {  
-        quality: 'lowestaudio',
-    });  
+  //   const audioFormat = ytdl.chooseFormat(videoInfo.formats, {  
+  //       quality: 'lowestaudio',
+  //   });  
     
-    if (!audioFormat || !audioFormat.url) {  
-        throw new Error('无法获取音频 URL');  
-    }  
+  //   if (!audioFormat || !audioFormat.url) {  
+  //       throw new Error('无法获取音频 URL');  
+  //   }  
     
-    console.log('获取到音频 URL:', audioFormat.url);  
-    return {audioUrl: audioFormat.url}
+  //   console.log('获取到音频 URL:', audioFormat.url);  
+  downloadAndConvert(url)
+    return {audioUrl: "111"}
         
 }  
 
