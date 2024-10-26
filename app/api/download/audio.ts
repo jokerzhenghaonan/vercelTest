@@ -223,6 +223,7 @@
 // import ytdl from 'ytdl-core';
 import youtubedl  from 'youtube-dl-exec';
 import { NextResponse } from 'next/server';
+import ytdl from '@distube/ytdl-core';
 import chromium from "@sparticuz/chromium-min";
 // import axios from 'axios';  
 // import fs from 'fs';  
@@ -356,26 +357,24 @@ async function tryProcessAudio(url: string, retries = 0) {
   console.log(`开始处理 YouTube 音频, URL: ${url}, 剩余重试次数: ${retries}`);
   //  const cookieGet = await GET();
   //  const agent = ytdl.createProxyAgent({uri: "http://127.0.0.1:3000"}, cookies);
-
+   const agent = ytdl.createAgent(cookies);
   //  console.log(agent, "55555")
- // const proxyUrl = 'http://127.0.0.1:7890';
-  // const agent = new HttpsProxyAgent(proxyUrl);
-  // const videoInfo = await youtubedl.getInfo(url);
-  // console.log('获取到视频信息', videoInfo);
 
-  // const audioFormat = youtubedl.chooseFormat(videoInfo.formats, {
-  //   quality: 'lowestaudio',
-  // });
-
-  // if (!audioFormat || !audioFormat.url) {
-  //   throw new Error('无法获取音频 URL');
-  // }
-
-  // console.log('获取到音频 URL:', audioFormat.url);
-  await downloadAndConvert(url)
-  return { audioUrl: "audioFormat.url" }
-
-}
+    const videoInfo = await ytdl.getInfo(url, { agent: agent });  
+   // console.log('获取到视频信息', videoInfo);  
+    
+    const audioFormat = ytdl.chooseFormat(videoInfo.formats, {  
+        quality: 'lowestaudio',
+    });  
+    
+    if (!audioFormat || !audioFormat.url) {  
+        throw new Error('无法获取音频 URL');  
+    }  
+    
+    console.log('获取到音频 URL:', audioFormat.url);  
+    return {audioUrl: audioFormat.url}
+        
+}  
 
 export async function processYoutubeAudio(url: string): Promise<any> {
   try {
