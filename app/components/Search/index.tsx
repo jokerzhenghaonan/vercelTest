@@ -10,7 +10,7 @@ export default function Search() {
     const handleClick = async () => {
         setIsLoading(true);
         setError(null);
-
+        console.log("111111111")
         try {
             const res = await fetch('/api/download', {
                 method: 'POST',
