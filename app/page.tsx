@@ -3,7 +3,6 @@ import Header from "./components/Header";
 import Search from "./components/Search";
 
 export default function Home() {
-  23
   return (
     <>
       <Header />
